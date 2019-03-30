@@ -129,14 +129,15 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
       child: CustomPaint(
         child: Container(),
         painter: _MarqueePainter(
-          widget.textList,
-          textSpanList: textSpanList,
-          fontSize: widget.fontSize,
-          textColor: widget.textColor,
-          verticalSpace: 0.0,
-          percent: percent,
-          current: current,
-          aligment: widget.aligment == null ? MarqueeAligment.left : widget.aligment
+            widget.textList,
+            textSpanList: textSpanList,
+            fontSize: widget.fontSize,
+            textColor: widget.textColor,
+            verticalSpace: 0.0,
+            percent: percent,
+            current: current,
+            aligment: widget.aligment == null ? MarqueeAligment.left : widget
+                .aligment
         ),
       ),
     );
@@ -244,7 +245,20 @@ class _MarqueePainter extends CustomPainter {
       width = size.width;
     }
     var height = textPainter.height;
-    var dx = aligment == MarqueeAligment.left ? 0.0  : (size.width / 2 - width / 2);
+    var dx = 0.0;
+    switch (aligment) {
+      case MarqueeAligment.left:
+        dx = 0.0;
+        break;
+      case MarqueeAligment.center:
+        dx = size.width / 2 - width / 2;
+        break;
+      case MarqueeAligment.right:
+        dx = size.width - width;
+        break;
+    }
+
+
     var dy = size.height / 2 - height / 2 - size.height * percent;
     if (isNext) {
       dy = dy + size.height;
@@ -279,4 +293,5 @@ class MarqueeController {
 enum MarqueeAligment {
   left,
   center,
+  right,
 }
