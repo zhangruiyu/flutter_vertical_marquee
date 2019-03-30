@@ -11,20 +11,19 @@ class Marquee extends StatefulWidget {
   final Duration stopDuration;
   final bool tapToNext;
   final MarqueeController controller;
-  final BoxDecoration boxDecoration;
-  final AlignmentDirectional alignment;
-  const Marquee(
-      {Key key,
-      this.textList = const [],
-      this.textSpanList = const [],
-      this.fontSize = 14.0,
-      this.textColor = Colors.black,
-      this.scrollDuration = const Duration(seconds: 1),
-      this.stopDuration = const Duration(seconds: 3),
-      this.tapToNext = false,
-      this.controller,
-      this.boxDecoration,
-      this.alignment})
+  final MarqueeAligment aligment;
+
+  const Marquee({Key key,
+    this.textList = const [],
+    this.textSpanList = const [],
+    this.fontSize = 14.0,
+    this.textColor = Colors.black,
+    this.scrollDuration = const Duration(seconds: 1),
+    this.stopDuration = const Duration(seconds: 3),
+    this.tapToNext = false,
+    this.controller,
+    this.aligment
+  })
       : super(key: key);
 
   @override
@@ -36,6 +35,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   int current = 0;
 
   List<String> get textList => widget.textList;
+
   List<TextSpan> get textSpanList => widget.textSpanList;
 
   Timer stopTimer;
@@ -50,8 +50,8 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
     animationConroller = AnimationController(vsync: this);
     stopTimer =
         Timer.periodic(widget.stopDuration + widget.scrollDuration, (timer) {
-      next();
-    });
+          next();
+        });
   }
 
   @override
@@ -94,7 +94,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     assert(!(textList.isNotEmpty && textSpanList.isNotEmpty),
-        "textList and textSpanList cannot have elements at the same time.",);
+    "textList and textSpanList cannot have elements at the same time.", );
 
     if ((textList == null || textList.isEmpty) &&
         (textSpanList == null || textSpanList.isEmpty)) {
@@ -102,13 +102,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
     }
 
     if (textList.length == 1) {
-      return Container(
-        decoration: widget.boxDecoration == null
-            ? const BoxDecoration()
-            : widget.boxDecoration,
-        alignment: widget.alignment == null
-            ? AlignmentDirectional.centerStart
-            : widget.alignment,
+      return Center(
         child: Text(
           textList[0],
           style: TextStyle(
@@ -120,13 +114,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
     }
 
     if (textSpanList.length == 1) {
-      return Container(
-        decoration: widget.boxDecoration == null
-            ? const BoxDecoration()
-            : widget.boxDecoration,
-        alignment: widget.alignment == null
-            ? AlignmentDirectional.centerStart
-            : widget.alignment,
+      return Center(
         child: Text.rich(
           textSpanList[0],
           style: TextStyle(
@@ -148,6 +136,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
           verticalSpace: 0.0,
           percent: percent,
           current: current,
+          aligment: widget.aligment == null ? MarqueeAligment.left : widget.aligment
         ),
       ),
     );
@@ -184,24 +173,25 @@ class _MarqueePainter extends CustomPainter {
   double verticalSpace;
   double fontSize;
   Color textColor;
+  MarqueeAligment aligment;
 
   int current = 0;
 
   double percent = 0.0;
 
-  _MarqueePainter(
-    this.textList, {
+  _MarqueePainter(this.textList, {
     this.textSpanList,
     this.fontSize,
     this.textColor,
     this.verticalSpace,
     this.percent = 0.0,
     this.current,
+    this.aligment
   });
 
   TextPainter textPainter = TextPainter(
     textDirection: TextDirection.ltr,
-    textAlign: TextAlign.center,
+    textAlign: TextAlign.left,
   );
 
   @override
@@ -227,7 +217,7 @@ class _MarqueePainter extends CustomPainter {
 
   void _paintCurrent(Size size, Canvas canvas) {
     textPainter.text = getTextSpan(current);
-    textPainter.textAlign = TextAlign.center;
+    textPainter.textAlign = TextAlign.left;
     textPainter.maxLines = 1;
     textPainter.ellipsis = "...";
 
@@ -237,7 +227,7 @@ class _MarqueePainter extends CustomPainter {
 
   _paintNext(Size size, Canvas canvas) {
     textPainter.text = getTextSpan(nextPosition);
-    textPainter.textAlign = TextAlign.center;
+    textPainter.textAlign = TextAlign.left;
     textPainter.maxLines = 1;
     textPainter.ellipsis = "...";
 
@@ -245,17 +235,16 @@ class _MarqueePainter extends CustomPainter {
     textPainter.paint(canvas, _getTextOffset(textPainter, size, isNext: true));
   }
 
-  Offset _getTextOffset(
-    TextPainter textPainter,
-    Size size, {
-    bool isNext = false,
-  }) {
+  Offset _getTextOffset(TextPainter textPainter,
+      Size size, {
+        bool isNext = false,
+      }) {
     var width = textPainter.width;
     if (width >= size.width) {
       width = size.width;
     }
     var height = textPainter.height;
-    var dx = size.width / 2 - width / 2;
+    var dx = aligment == MarqueeAligment.left ? 0.0  : (size.width / 2 - width / 2);
     var dy = size.height / 2 - height / 2 - size.height * percent;
     if (isNext) {
       dy = dy + size.height;
@@ -284,4 +273,10 @@ class _MarqueePainter extends CustomPainter {
 
 class MarqueeController {
   int position;
+}
+
+
+enum MarqueeAligment {
+  left,
+  center,
 }
