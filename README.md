@@ -1,14 +1,13 @@
 # flutter_vertical_marquee
 
 [![pub package](https://img.shields.io/pub/v/flutter_vertical_marquee.svg)](https://pub.dartlang.org/packages/flutter_vertical_marquee)
+## NOTE
+  在作者的原始代码上修改了一下，可以指定内容是 居左/居右/居中
+
 
 ## screenshot
 
 ![image](https://raw.githubusercontent.com/CaiJingLong/some_asset/master/flutter_vertical_marquee1.gif)
-
-## install
-
-latest_version: [![pub package](https://img.shields.io/pub/v/flutter_vertical_marquee.svg)](https://pub.dartlang.org/packages/flutter_vertical_marquee)
 
 yaml
 
@@ -19,7 +18,9 @@ dependencies:
 
   ...
   # marquee
-  flutter_vertical_marquee: $latest_version
+  flutter_vertical_marquee:
+    git:
+      url: https://github.com/mimicode/flutter_vertical_marquee
 ```
 
 import in dart:
@@ -46,6 +47,7 @@ build widget
         height: 40.0,
         color: Colors.lightBlueAccent.shade100,
         child: Marquee(
+          aligment: MarqueeAligment.left,
           textList: _tipMarqueeList, // List<Text>, textList and textSpanList can only have one of code.
           textSpanList: // List<TextSpan> text, textList and textSpanList can only have one of code.
           fontSize: 14.0, // text size
@@ -62,9 +64,3 @@ build widget
     );
   }
 ```
-
-or see example tab
-
-## call me
-
-email cjl_spy@163.com
