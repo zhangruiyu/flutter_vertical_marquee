@@ -11,18 +11,21 @@ class Marquee extends StatefulWidget {
   final Duration stopDuration;
   final bool tapToNext;
   final MarqueeController controller;
-
-  const Marquee({
-    Key key,
-    this.textList = const [],
-    this.textSpanList = const [],
-    this.fontSize = 14.0,
-    this.textColor = Colors.black,
-    this.scrollDuration = const Duration(seconds: 1),
-    this.stopDuration = const Duration(seconds: 3),
-    this.tapToNext = false,
-    this.controller,
-  }) : super(key: key);
+  final BoxDecoration boxDecoration;
+  final AlignmentDirectional alignment;
+  const Marquee(
+      {Key key,
+      this.textList = const [],
+      this.textSpanList = const [],
+      this.fontSize = 14.0,
+      this.textColor = Colors.black,
+      this.scrollDuration = const Duration(seconds: 1),
+      this.stopDuration = const Duration(seconds: 3),
+      this.tapToNext = false,
+      this.controller,
+      this.boxDecoration,
+      this.alignment})
+      : super(key: key);
 
   @override
   _MarqueeState createState() => _MarqueeState();
@@ -99,7 +102,13 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
     }
 
     if (textList.length == 1) {
-      return Center(
+      return Container(
+        decoration: widget.boxDecoration == null
+            ? const BoxDecoration()
+            : widget.boxDecoration,
+        alignment: widget.alignment == null
+            ? AlignmentDirectional.centerStart
+            : widget.alignment,
         child: Text(
           textList[0],
           style: TextStyle(
@@ -111,7 +120,13 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
     }
 
     if (textSpanList.length == 1) {
-      return Center(
+      return Container(
+        decoration: widget.boxDecoration == null
+            ? const BoxDecoration()
+            : widget.boxDecoration,
+        alignment: widget.alignment == null
+            ? AlignmentDirectional.centerStart
+            : widget.alignment,
         child: Text.rich(
           textSpanList[0],
           style: TextStyle(
