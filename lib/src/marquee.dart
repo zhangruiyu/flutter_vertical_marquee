@@ -88,6 +88,7 @@ class _MarqueeState extends State<Marquee> with SingleTickerProviderStateMixin {
     controller?.position = current;
     if (percent > 0.5) {
       controller?.position = nextPosition;
+      controller?.changeIndex(controller?.position);
     }
   }
 
@@ -287,8 +288,9 @@ class _MarqueePainter extends CustomPainter {
 
 class MarqueeController {
   int position;
+  ChangeIndex changeIndex;
 }
-
+typedef void ChangeIndex(int index);
 
 enum MarqueeAligment {
   left,
